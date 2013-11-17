@@ -11,13 +11,18 @@ get "/" do
     "http://127.0.0.1:4567/success",
     "http://127.0.0.1:4567/cancel"
   )
-  response.redirect_uri
+  redirect response.redirect_uri
 end
 
 get "/success" do
   response = req.agree! params["token"]
   billing_agreement_id = response.billing_agreement.identifier
-  req.charge! billing_agreement_id, 100
+  response = req.charge! billing_agreement_id, 100
+  "Your payment was a success, transaction # #{response.transaction_id}"
+end
+
+get "/cancel" do
+  "No purchase for you!"
 end
 
 def req
